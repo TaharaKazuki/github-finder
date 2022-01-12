@@ -1,4 +1,4 @@
-import { createContext, useState, ReactNode } from 'react'
+import { createContext, useState, ReactNode, useCallback } from 'react'
 import responseType from '../../components/users/response.json'
 
 export interface IGithubContext {
@@ -20,7 +20,7 @@ export const GithubProvider = (props: Props) => {
   const [users, setUsers] = useState<Array<typeof responseType>>([])
   const [loading, setLoading] = useState<boolean>(true)
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     const response = await fetch(`${GITHUB_URL}/users`, {
       headers: {
         Authorization: `token ${GITHUB_TOKEN}`,
@@ -30,7 +30,7 @@ export const GithubProvider = (props: Props) => {
     const data = await response.json()
     setUsers(data)
     setLoading(false)
-  }
+  }, [])
 
   return (
     <GithubContext.Provider
