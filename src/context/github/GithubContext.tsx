@@ -1,5 +1,6 @@
-import { createContext, useState, ReactNode, useCallback } from 'react'
+import { createContext, ReactNode, useCallback, useReducer } from 'react'
 import responseType from '../../components/users/response.json'
+import githubReducer from './GithubReducer'
 
 export interface IGithubContext {
   users: Array<typeof responseType>
@@ -17,9 +18,13 @@ const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN
 
 export const GithubProvider = (props: Props) => {
   const { children } = props
-  const [users, setUsers] = useState<Array<typeof responseType>>([])
-  const [loading, setLoading] = useState<boolean>(true)
+  const initialState = {
+    users: [] as Array<typeof responseType>,
+    loading: true,
+  }
 
+  const [state, dispatch] = useReducer(githubReducer, initialState)
+  const { users, loading } = state
   const fetchUsers = useCallback(async () => {
     const response = await fetch(`${GITHUB_URL}/users`, {
       headers: {
@@ -28,8 +33,11 @@ export const GithubProvider = (props: Props) => {
     })
 
     const data = await response.json()
-    setUsers(data)
-    setLoading(false)
+
+    dispatch({
+      type: 'GET_USERS',
+      payload: data,
+    })
   }, [])
 
   return (
