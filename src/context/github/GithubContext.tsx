@@ -5,7 +5,7 @@ import githubReducer from './GithubReducer'
 export interface IGithubContext {
   users: Array<typeof responseType>
   loading: boolean
-  fetchUsers: () => Promise<void>
+  searchUsers: (text: string) => Promise<void>
 }
 
 interface Props {
@@ -25,20 +25,24 @@ export const GithubProvider = (props: Props) => {
 
   const [state, dispatch] = useReducer(githubReducer, initialState)
   const { users, loading } = state
-  const fetchUsers = useCallback(async () => {
+
+  const searchUsers = useCallback(async (text: string) => {
     setLoading()
 
-    const response = await fetch(`${GITHUB_URL}/users`, {
+    const params = new URLSearchParams({
+      q: text,
+    })
+
+    const response = await fetch(`${GITHUB_URL}/search/users?${params}`, {
       headers: {
         Authorization: `token ${GITHUB_TOKEN}`,
       },
     })
-
-    const data = await response.json()
+    const { items } = await response.json()
 
     dispatch({
       type: 'GET_USERS',
-      payload: data,
+      payload: items,
     })
   }, [])
 
@@ -49,7 +53,7 @@ export const GithubProvider = (props: Props) => {
       value={{
         users,
         loading,
-        fetchUsers,
+        searchUsers,
       }}
     >
       {children}

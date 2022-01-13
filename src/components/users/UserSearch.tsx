@@ -5,8 +5,7 @@ import GithubContext, {
 
 const UserSearch = () => {
   const [text, setText] = useState<string>('')
-
-  const { users } = useContext(GithubContext) as IGithubContext
+  const { users, searchUsers } = useContext(GithubContext) as IGithubContext
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     setText(e.target.value)
@@ -16,6 +15,8 @@ const UserSearch = () => {
     if (text === '') {
       alert('Please enter something')
     } else {
+      searchUsers(text)
+      setText('')
     }
   }
   return (
