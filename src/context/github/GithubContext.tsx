@@ -6,6 +6,7 @@ export interface IGithubContext {
   users: Array<typeof responseType>
   loading: boolean
   searchUsers: (text: string) => Promise<void>
+  clearUsers: () => void
 }
 
 interface Props {
@@ -45,7 +46,7 @@ export const GithubProvider = (props: Props) => {
       payload: items,
     })
   }, [])
-
+  const clearUsers = () => dispatch({ type: 'CLEAR_USERS' })
   const setLoading = () => dispatch({ type: 'SET_LOADING' })
 
   return (
@@ -54,6 +55,7 @@ export const GithubProvider = (props: Props) => {
         users,
         loading,
         searchUsers,
+        clearUsers,
       }}
     >
       {children}

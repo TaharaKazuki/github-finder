@@ -2,10 +2,14 @@ import React, { useState, useContext, ChangeEvent, FormEvent } from 'react'
 import GithubContext, {
   IGithubContext,
 } from '../../context/github/GithubContext'
+import AlertContext, { IAlertContext } from '../../context/alert/AlertContext'
 
 const UserSearch = () => {
   const [text, setText] = useState<string>('')
-  const { users, searchUsers } = useContext(GithubContext) as IGithubContext
+  const { users, searchUsers, clearUsers } = useContext(
+    GithubContext
+  ) as IGithubContext
+  const { setAlert } = useContext(AlertContext) as IAlertContext
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     setText(e.target.value)
@@ -13,7 +17,7 @@ const UserSearch = () => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (text === '') {
-      alert('Please enter something')
+      setAlert('Please enter something', 'error')
     } else {
       searchUsers(text)
       setText('')
@@ -44,7 +48,9 @@ const UserSearch = () => {
       </div>
       {users.length > 0 && (
         <div>
-          <button className="btn btn-ghost btn-lg">Clear</button>
+          <button onClick={clearUsers} className="btn btn-ghost btn-lg">
+            Clear
+          </button>
         </div>
       )}
     </div>
