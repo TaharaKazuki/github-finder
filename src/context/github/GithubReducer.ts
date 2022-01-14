@@ -1,12 +1,13 @@
 import responseType from '../../components/users/response.json'
 
 interface IActionType {
-  type: 'GET_USERS' | 'SET_LOADING' | 'CLEAR_USERS'
-  payload?: Array<typeof responseType>
+  type: 'GET_USERS' | 'SET_LOADING' | 'CLEAR_USERS' | 'GET_USER'
+  payload?: any
 }
 
 interface IState {
   users: Array<typeof responseType>
+  user?: typeof responseType
   loading: boolean
 }
 
@@ -15,7 +16,13 @@ const githubReducer = (state: IState, action: IActionType) => {
     case 'GET_USERS':
       return {
         ...state,
-        users: [...action.payload!],
+        users: action.payload,
+        loading: false,
+      }
+    case 'GET_USER':
+      return {
+        ...state,
+        user: action.payload,
         loading: false,
       }
     case 'SET_LOADING':
