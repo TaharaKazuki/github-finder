@@ -6,9 +6,11 @@ export interface IGithubContext {
   users: Array<typeof responseType>
   user: typeof responseType
   loading: boolean
+  repos: Array<any>
   searchUsers: (text: string) => Promise<void>
   clearUsers: () => void
   getUser: (login: string) => Promise<void>
+  getUserRepos: (login: string) => Promise<void>
 }
 
 interface Props {
@@ -27,7 +29,7 @@ export const GithubProvider = (props: Props) => {
   }
 
   const [state, dispatch] = useReducer(githubReducer, initialState)
-  const { users, loading, user } = state
+  const { users, loading, user, repos } = state
 
   const searchUsers = useCallback(async (text: string) => {
     setLoading()
@@ -68,6 +70,31 @@ export const GithubProvider = (props: Props) => {
       })
     }
   }, [])
+
+  const getUserRepos = useCallback(async (login: string) => {
+    setLoading()
+
+    const params = new URLSearchParams({
+      sort: 'created',
+      per_page: `10`,
+    })
+
+    const response = await fetch(
+      `${GITHUB_URL}/users/${login}/repos?${params}`,
+      {
+        headers: {
+          Authorization: `token ${GITHUB_TOKEN}`,
+        },
+      }
+    )
+    const data = await response.json()
+
+    dispatch({
+      type: 'GET_REPOS',
+      payload: data,
+    })
+  }, [])
+
   const clearUsers = () => dispatch({ type: 'CLEAR_USERS' })
   const setLoading = () => dispatch({ type: 'SET_LOADING' })
 
@@ -80,6 +107,8 @@ export const GithubProvider = (props: Props) => {
         searchUsers,
         clearUsers,
         getUser,
+        repos,
+        getUserRepos,
       }}
     >
       {children}
