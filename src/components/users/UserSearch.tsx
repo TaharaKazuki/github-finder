@@ -7,9 +7,7 @@ import { searchUser } from '../../context/github/GithubActions'
 
 const UserSearch = () => {
   const [text, setText] = useState<string>('')
-  const { users, clearUsers, dispatch } = useContext(
-    GithubContext
-  ) as IGithubContext
+  const { users, dispatch } = useContext(GithubContext) as IGithubContext
   const { setAlert } = useContext(AlertContext) as IAlertContext
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
@@ -51,7 +49,10 @@ const UserSearch = () => {
       </div>
       {users.length > 0 && (
         <div>
-          <button onClick={clearUsers} className="btn btn-ghost btn-lg">
+          <button
+            onClick={() => dispatch({ type: 'CLEAR_USERS' })}
+            className="btn btn-ghost btn-lg"
+          >
             Clear
           </button>
         </div>
