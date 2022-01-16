@@ -1,14 +1,14 @@
 import { createContext, ReactNode, useCallback, useReducer } from 'react'
 import responseType from '../../components/users/response.json'
 import reposResponseType from '../../components/repos/response.json'
-import githubReducer from './GithubReducer'
+import githubReducer, { IActionType } from './GithubReducer'
 
 export interface IGithubContext {
   users: Array<typeof responseType>
   user: typeof responseType
   loading: boolean
   repos: Array<typeof reposResponseType>
-  searchUsers: (text: string) => Promise<void>
+  dispatch: React.Dispatch<IActionType>
   clearUsers: () => void
   getUser: (login: string) => Promise<void>
   getUserRepos: (login: string) => Promise<void>
@@ -31,26 +31,6 @@ export const GithubProvider = (props: Props) => {
 
   const [state, dispatch] = useReducer(githubReducer, initialState)
   const { users, loading, user, repos } = state
-
-  const searchUsers = useCallback(async (text: string) => {
-    setLoading()
-
-    const params = new URLSearchParams({
-      q: text,
-    })
-
-    const response = await fetch(`${GITHUB_URL}/search/users?${params}`, {
-      headers: {
-        Authorization: `token ${GITHUB_TOKEN}`,
-      },
-    })
-    const { items } = await response.json()
-
-    dispatch({
-      type: 'GET_USERS',
-      payload: items,
-    })
-  }, [])
 
   const getUser = useCallback(async (login: string) => {
     setLoading()
@@ -105,7 +85,7 @@ export const GithubProvider = (props: Props) => {
         users,
         user,
         loading,
-        searchUsers,
+        dispatch,
         clearUsers,
         getUser,
         repos,

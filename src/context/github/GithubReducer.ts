@@ -1,6 +1,6 @@
 import responseType from '../../components/users/response.json'
 
-interface IActionType {
+export interface IActionType {
   type: 'GET_USERS' | 'SET_LOADING' | 'CLEAR_USERS' | 'GET_USER' | 'GET_REPOS'
   payload?: any
 }

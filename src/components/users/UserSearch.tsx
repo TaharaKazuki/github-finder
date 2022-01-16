@@ -3,10 +3,11 @@ import GithubContext, {
   IGithubContext,
 } from '../../context/github/GithubContext'
 import AlertContext, { IAlertContext } from '../../context/alert/AlertContext'
+import { searchUser } from '../../context/github/GithubActions'
 
 const UserSearch = () => {
   const [text, setText] = useState<string>('')
-  const { users, searchUsers, clearUsers } = useContext(
+  const { users, clearUsers, dispatch } = useContext(
     GithubContext
   ) as IGithubContext
   const { setAlert } = useContext(AlertContext) as IAlertContext
@@ -14,12 +15,14 @@ const UserSearch = () => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     setText(e.target.value)
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (text === '') {
       setAlert('Please enter something', 'error')
     } else {
-      searchUsers(text)
+      dispatch({ type: 'SET_LOADING' })
+      const users = await searchUser(text)
+      dispatch({ type: 'GET_USERS', payload: users })
       setText('')
     }
   }
