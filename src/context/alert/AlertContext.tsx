@@ -19,7 +19,6 @@ export const AlertProvider = (props: Props) => {
   const [state, dispatch] = useReducer(alertReducer, initialState)
 
   const setAlert = (msg: string, type: string) => {
-    console.info('msg', msg)
     dispatch({
       type: 'SET_ALERT',
       payload: { msg, type },

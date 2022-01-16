@@ -1,12 +1,13 @@
 import { createContext, ReactNode, useCallback, useReducer } from 'react'
 import responseType from '../../components/users/response.json'
+import reposResponseType from '../../components/repos/response.json'
 import githubReducer from './GithubReducer'
 
 export interface IGithubContext {
   users: Array<typeof responseType>
   user: typeof responseType
   loading: boolean
-  repos: Array<any>
+  repos: Array<typeof reposResponseType>
   searchUsers: (text: string) => Promise<void>
   clearUsers: () => void
   getUser: (login: string) => Promise<void>
