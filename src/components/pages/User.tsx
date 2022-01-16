@@ -15,7 +15,7 @@ const User: FC = () => {
     getUser(params.login!)
     getUserRepos(params.login!)
   }, [getUser, getUserRepos, params.login])
-  console.info('repose', repos)
+  console.info('repose', JSON.stringify(repos))
 
   return !user ? <Spinner /> : <div>{user.login}</div>
 }
